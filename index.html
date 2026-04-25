@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NPTEL Cloud Computing Quiz | All 12 Weeks</title>
+  <meta name="description" content="Practice NPTEL Cloud Computing assignment questions for all 12 weeks. Test your knowledge with MCQ and MSQ questions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-animated">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+  </div>
+
+  <!-- Home Screen -->
+  <div id="screen-home" class="screen active">
+    <header class="home-header">
+      <div class="logo-badge">NPTEL</div>
+      <h1 class="home-title">Cloud Computing<br /><span class="gradient-text">Quiz Master</span></h1>
+      <p class="home-subtitle">12 Weeks · 120 Questions · Practice Mode</p>
+    </header>
+
+    <div class="week-grid" id="week-grid">
+      <!-- Week cards injected by JS -->
+    </div>
+
+    <div class="home-actions">
+      <button class="btn btn-primary btn-large" id="btn-all-weeks" onclick="startQuiz('all')">
+        <span class="btn-icon">⚡</span> Practice All Weeks
+      </button>
+      <button class="btn btn-outline btn-large" id="btn-random" onclick="startQuiz('random')">
+        <span class="btn-icon">🎲</span> Random 10 Questions
+      </button>
+    </div>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <button class="btn-back" onclick="goHome()" id="btn-back">← Home</button>
+      <div class="quiz-meta">
+        <span class="quiz-label" id="quiz-label">Week 1</span>
+        <span class="quiz-progress-text" id="quiz-progress-text">1 / 10</span>
+      </div>
+      <div class="quiz-score-badge" id="quiz-score-badge">Score: 0</div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+
+    <div class="quiz-body" id="quiz-body">
+      <div class="question-card" id="question-card">
+        <div class="question-number" id="question-number">Q1</div>
+        <p class="question-text" id="question-text">Loading...</p>
+        <div class="options-list" id="options-list"></div>
+        <div class="question-feedback" id="question-feedback" style="display:none"></div>
+      </div>
+    </div>
+
+    <div class="quiz-footer">
+      <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" style="display:none">Next Question →</button>
+      <button class="btn btn-primary" id="btn-finish" onclick="showResults()" style="display:none">See Results 🏆</button>
+    </div>
+  </div>
+
+  <!-- Results Screen -->
+  <div id="screen-results" class="screen">
+    <div class="results-container">
+      <div class="results-icon" id="results-icon">🏆</div>
+      <h2 class="results-title" id="results-title">Quiz Complete!</h2>
+      <div class="score-ring-wrap">
+        <svg class="score-ring" viewBox="0 0 120 120">
+          <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+          <circle class="score-ring-fill" id="score-ring-fill" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/>
+        </svg>
+        <div class="score-ring-text">
+          <span class="score-big" id="score-big">0</span>
+          <span class="score-total" id="score-total">/10</span>
+        </div>
+      </div>
+      <p class="results-msg" id="results-msg">Great effort!</p>
+
+      <div class="results-stats" id="results-stats"></div>
+
+      <div class="review-section" id="review-section"></div>
+
+      <div class="results-actions">
+        <button class="btn btn-primary btn-large" onclick="retryQuiz()">🔄 Retry Quiz</button>
+        <button class="btn btn-outline btn-large" onclick="goHome()">🏠 Home</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
