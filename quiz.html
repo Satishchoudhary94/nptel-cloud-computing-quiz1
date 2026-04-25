@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>NPTEL Cloud Computing - Quiz Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e17;--card:#111827;--card-hover:#1a2332;--accent:#22d3ee;--accent2:#a78bfa;--accent3:#34d399;--wrong:#f87171;--text:#e2e8f0;--text-dim:#94a3b8;--border:#1e293b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
+.app{max-width:720px;margin:0 auto;padding:16px;padding-bottom:100px}
+.header{text-align:center;padding:32px 16px 24px;position:relative}
+.header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px}
+.header h1{font-family:'Space Mono',monospace;font-size:1.4rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.header p{color:var(--text-dim);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
+.stat-card .num{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--accent)}
+.stat-card .label{font-size:.7rem;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.mode-section{margin:24px 0}
+.mode-section h2{font-size:1rem;margin-bottom:12px;color:var(--text-dim);font-weight:500}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode-btn{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:18px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;text-align:left}
+.mode-btn:active{transform:scale(.97)}
+.mode-btn:hover{border-color:var(--accent);background:var(--card-hover)}
+.mode-btn .icon{font-size:1.4rem;display:block;margin-bottom:8px}
+.mode-btn .desc{font-size:.72rem;font-weight:400;color:var(--text-dim);margin-top:4px;display:block}
+.week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+.week-btn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 6px;color:var(--text);font-family:'Space Mono',monospace;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.week-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--card-hover)}
+.week-btn:active{transform:scale(.95)}
+.quiz-screen{display:none}.quiz-screen.active{display:block}
+.home-screen.hidden{display:none}
+.results-screen{display:none}.results-screen.active{display:block}
+.progress-wrap{position:sticky;top:0;z-index:100;background:var(--bg);padding:12px 0;margin-bottom:8px}
+.progress-bar-bg{height:5px;background:var(--border);border-radius:10px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;transition:width .4s ease}
+.progress-info{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.progress-info span{font-size:.75rem;color:var(--text-dim);font-family:'Space Mono',monospace}
+.btn-back{background:none;border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif}
+.btn-back:active{background:var(--card)}
+.question-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;margin-bottom:16px;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.q-week-tag{display:inline-block;font-size:.65rem;font-family:'Space Mono',monospace;color:var(--accent);background:rgba(34,211,238,.1);padding:3px 10px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.q-text{font-size:.95rem;line-height:1.6;margin-bottom:20px;font-weight:500}
+.options-list{display:flex;flex-direction:column;gap:10px}
+.option-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;line-height:1.5;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:flex-start;gap:12px}
+.option-btn:active:not(.disabled){transform:scale(.98)}
+.option-btn:hover:not(.disabled){border-color:var(--accent);background:var(--card-hover)}
+.opt-letter{min-width:28px;height:28px;border-radius:8px;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:.75rem;font-weight:700;flex-shrink:0;transition:all .2s}
+.option-btn.correct{border-color:var(--accent3);background:rgba(34,211,238,.08)}
+.option-btn.correct .opt-letter{background:var(--accent3);color:var(--bg)}
+.option-btn.wrong{border-color:var(--wrong);background:rgba(248,113,113,.08)}
+.option-btn.wrong .opt-letter{background:var(--wrong);color:var(--bg)}
+.option-btn.disabled{cursor:default;opacity:.7}
+.option-btn.correct.disabled{opacity:1}
+.explanation{margin-top:16px;padding:16px;background:rgba(167,139,250,.06);border-left:3px solid var(--accent2);border-radius:0 10px 10px 0;font-size:.82rem;line-height:1.6;color:var(--text-dim);animation:fadeUp .3s ease}
+.explanation strong{color:var(--accent2);font-weight:600}
+.btn-next{display:none;width:100%;padding:16px;margin-top:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;color:var(--bg);font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-next:active{transform:scale(.97);opacity:.9}
+.btn-next.visible{display:block}
+.results-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px 24px;text-align:center;margin:24px 0}
+.score-circle{width:140px;height:140px;border-radius:50%;border:5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px}
+.score-circle.good{border-color:var(--accent3)}.score-circle.avg{border-color:#fbbf24}.score-circle.bad{border-color:var(--wrong)}
+.score-num{font-family:'Space Mono',monospace;font-size:2.2rem;font-weight:700}
+.score-label{font-size:.75rem;color:var(--text-dim)}
+.results-card h2{font-size:1.1rem;margin-bottom:6px}
+.results-card p{color:var(--text-dim);font-size:.85rem}
+.results-btns{display:flex;gap:10px;margin-top:20px}
+.results-btns button{flex:1;padding:14px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.results-btns button:active{transform:scale(.97)}
+.btn-retry{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:var(--bg)}
+.btn-home{background:var(--card);border:1.5px solid var(--border);color:var(--text)}
+.review-section{margin-top:24px}
+.review-section h3{font-size:.9rem;color:var(--wrong);margin-bottom:12px}
+.review-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px}
+.review-item .ri-q{font-size:.82rem;margin-bottom:8px;line-height:1.5}
+.review-item .ri-ans{font-size:.78rem;color:var(--accent3)}
+.review-item .ri-your{font-size:.78rem;color:var(--wrong);margin-bottom:4px}
+.btn-reset{background:none;border:1px solid var(--border);color:var(--text-dim);padding:10px;border-radius:10px;cursor:pointer;font-size:.75rem;width:100%;margin-top:16px;font-family:'DM Sans',sans-serif}
+@media(max-width:400px){.app{padding:10px}.mode-grid{grid-template-columns:1fr}.week-grid{grid-template-columns:repeat(3,1fr)}.header h1{font-size:1.2rem}.q-text{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="home-screen" id="homeScreen">
+<div class="header"><h1>☁️ Cloud Computing</h1><p>NPTEL IIT Kharagpur — Quiz Practice</p></div>
+<div class="stats-bar">
+<div class="stat-card"><div class="num" id="statTotal">120</div><div class="label">Questions</div></div>
+<div class="stat-card"><div class="num" id="statAttempted">0</div><div class="label">Attempted</div></div>
+<div class="stat-card"><div class="num" id="statAccuracy">—</div><div class="label">Accuracy</div></div>
+</div>
+<div class="mode-section"><h2>Choose Practice Mode</h2>
+<div class="mode-grid">
+<button class="mode-btn" onclick="startQuiz('all')"><span class="icon">📚</span>All 120 Qs<span class="desc">Full syllabus marathon</span></button>
+<button class="mode-btn" onclick="startQuiz('random20')"><span class="icon">🎲</span>Random 20<span class="desc">Quick mock test</span></button>
+<button class="mode-btn" onclick="startQuiz('random10')"><span class="icon">⚡</span>Quick 10<span class="desc">Fast revision</span></button>
+<button class="mode-btn" onclick="startQuiz('weak')"><span class="icon">🎯</span>Weak Areas<span class="desc">Previously wrong answers</span></button>
+</div></div>
+<div class="mode-section"><h2>Practice by Week</h2><div class="week-grid" id="weekGrid"></div></div>
+<button class="btn-reset" onclick="if(confirm('Reset all stats?')){localStorage.removeItem('ccStats');stats={attempted:0,correct:0,wrongIds:[]};updateHomeStats()}">🗑️ Reset All Stats</button>
+</div>
+
+<div class="quiz-screen" id="quizScreen">
+<div class="progress-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-info"><button class="btn-back" onclick="confirmExit()">← Exit</button><span id="progressText">1/10</span><span id="scoreText">Score: 0</span></div></div>
+<div id="questionArea"></div>
+<button class="btn-next" id="btnNext" onclick="nextQuestion()">Next Question →</button>
+</div>
+
+<div class="results-screen" id="resultsScreen">
+<div class="results-card"><div class="score-circle" id="scoreCircle"><div class="score-num" id="finalScore">0%</div><div class="score-label">Score</div></div>
+<h2 id="resultsTitle">Great Job!</h2><p id="resultsMsg">Keep practicing!</p></div>
+<div class="results-btns"><button class="btn-home" onclick="goHome()">🏠 Home</button><button class="btn-retry" onclick="retryQuiz()">🔄 Retry</button></div>
+<div class="review-section" id="reviewSection"></div>
+</div>
+</div>
+
+<script>
+const Q=[
+{w:1,q:"Which statement least aligns with NIST defined essential characteristics of cloud computing?",o:["On-demand self-service","Rapid elasticity","Guaranteed zero downtime for all services","Measured service"],a:2,e:"NIST lists on-demand self-service, resource pooling, rapid elasticity, measured service, broad network access — no absolute downtime guarantee."},
+{w:1,q:"A user accesses Google Docs through a browser, never manages servers/OS/runtime. Google Docs is best classified as:",o:["PaaS","IaaS","SaaS","FaaS"],a:2,e:"Google Docs is a provider's application accessed via browser — SaaS."},
+{w:1,q:"Which is a public cloud platform in typical commercial cloud computing?",o:["Windows Server with Hyper-V on on-premise hardware","Google Cloud Platform services over public Internet","Private OpenStack cloud inside company's data center","VMware vSphere for internal virtualization"],a:1,e:"Public cloud is operated by third-party provider and available over the public Internet."},
+{w:1,q:"About virtualization technology — which statement is MOST accurate?",o:["Each VM always shares the same OS kernel with host","Multiple VMs can run different OSs on same physical machine simultaneously","Virtualization is only possible in cloud environments","Virtualization prevents resource overcommitment"],a:1,e:"Modern hypervisors allow multiple VMs with different OSs on same hardware. Option A describes containers. Overcommitment is a feature."},
+{w:1,q:"Distributed systems are preferred when task is: (i) Data-intensive (ii) Compute-intensive (iii) Latency-sensitive but confined to single machine. Best option:",o:["Only (i)","Only (ii)","(i) and (ii)","(i), (ii), and (iii)"],a:2,e:"Distributed systems excel for data-intensive and compute-intensive tasks. Latency-sensitive tasks on single machine may suffer from distribution overhead."},
+{w:1,q:"SOA + Cloud Computing paradigm where any IT capability can be delivered as network-accessible service is called:",o:["FTP","SNTP","XaaS","FaaS"],a:2,e:"XaaS = Anything/Everything as a Service — umbrella term for diverse IT services via cloud."},
+{w:1,q:"Which PaaS statements are CORRECT? (i) Abstracts infrastructure (ii) Provides integrated services (iii) Always gives root VM access (iv) Supports rapid deployment",o:["(i),(ii),(iv) only","(ii),(iii) only","(i),(iii) only","(i),(ii),(iii),(iv)"],a:0,e:"PaaS hides infrastructure, offers integrated services, enables rapid development. Root VM access (iii) is IaaS."},
+{w:1,q:"Which best distinguishes Type-1 (bare-metal) hypervisor from Type-2?",o:["Type-1 runs on top of OS; Type-2 directly on hardware","Type-1 gives lower virtualization overhead — runs directly on hardware","Type-2 can run multiple OSs; Type-1 cannot","Type-1 is only for desktop virtualization"],a:1,e:"Type-1 runs on bare metal with lower overhead. Type-2 runs on host OS."},
+{w:1,q:"Which is a valid PaaS example?",o:["Server image you configure on a rented VM","Managed relational database with automatic backups and scaling","VM where you install your own OS","Bare-metal server managed by your organization"],a:1,e:"Managed DB with automatic backups/scaling is PaaS — provider handles infrastructure and maintenance."},
+{w:1,q:"A _____ consists of interconnected stand-alone computers in close proximity, managed as a single system.",o:["Grid","Cluster","Cloud","Node"],a:1,e:"Cluster is tightly-coupled computers in close proximity. Grids are loosely coupled and geographically distributed."},
+{w:2,q:"Para-virtualization is best described as:",o:["Running unmodified guest OS with full CPU trapping","Modifying guest OS to use hypervisor-aware interfaces","Emulating hardware in software","Running containers that share host kernel"],a:1,e:"Para-virtualization requires guest OS modification to call hypervisor-friendly interfaces."},
+{w:2,q:"Which statement about community cloud is MOST accurate?",o:["Owned by single organization exclusively","Shared infrastructure among organizations with similar compliance needs","Public cloud with extra IAM roles","Always most cost-effective for startups"],a:1,e:"Community cloud shares infrastructure among organizations with common regulatory concerns."},
+{w:2,q:"For outsourced private cloud, which should be considered? (i) Network/SLAs (ii) Multi-tenancy risks (iii) Legal/compliance",o:["Only (i)","(i) and (ii) only","(i) and (iii) only","(i), (ii) and (iii)"],a:3,e:"All three: network/SLA concerns, multi-tenancy risks, and legal/compliance issues."},
+{w:2,q:"For very large XML files in memory-constrained environment with explicit control, which parser is MOST appropriate?",o:["DOM (loads entire XML into memory)","SAX (push-based, limited control)","StAX (pull-based, explicit control)","All equally suitable"],a:2,e:"StAX is pull-based with low memory and explicit control — best for large XML in constrained environments."},
+{w:2,q:"Hypervisor shows 40% CPU but VMs report 15%. What explains the 25% gap?",o:["Using binary translation instead of hardware extensions","Context switching, memory management, I/O emulation overhead","Unmodified OS can't utilize hardware virtualization","Efficient resource overcommitment"],a:1,e:"Context switching, page tables/EPT, and device emulation consume CPU not visible to guest OS metrics."},
+{w:2,q:"Which clarifies Hypervisor, VMM, and Cluster Manager?",o:["All synonymous","Hypervisor=VMM; VM Manager adds orchestration; Cluster Manager manages physical machines","Hypervisor=Type1 only; VMM=Type2 only","Different layers in multi-tier stack"],a:1,e:"Hypervisor and VMM are interchangeable. VM Manager adds orchestration. Cluster Manager manages physical machines."},
+{w:2,q:"Speed and flexibility are disadvantages of para-virtualization.",o:["True","False"],a:0,e:"Para-virtualization requires OS modification (less flexible). Performance depends on OS support (speed not universal)."},
+{w:2,q:"Which mechanism was designed as registry/discovery for web services?",o:["SMS","HTTP","SMTP","UDDI"],a:3,e:"UDDI is the registry protocol designed for discovering web services."},
+{w:2,q:"Traditional web services address: (i) Firewall pass-through (ii) Cross-platform interop (iii) Ultra-low-latency real-time (iv) UDDI discovery",o:["Only (i) and (ii)","(i),(ii),(iv) addressed; (iii) NOT","Only (ii)","All addressed"],a:1,e:"Web services handle firewall transparency, interoperability, discovery. But XML/SOAP overhead prevents ultra-low-latency."},
+{w:2,q:"SOA models relationships primarily among:",o:["Two entities (provider+requestor)","Two entities (provider+broker)","Three entities (provider, requestor, broker/registry)","Three entities (provider, requestor, hypervisor)"],a:2,e:"SOA: service provider, service requestor, and service broker (registry/mediator)."},
+{w:3,q:"Which is least likely specified in an operational cloud SLA?",o:["Recovery Time Objective (RTO)","Exact encryption algorithm and key storage procedures","Mean Time To Repair (MTTR)","Penalty/credit calculation for downtime"],a:1,e:"SLAs describe service-level commitments. Exact algorithms/key storage belong in security documents."},
+{w:3,q:"Which level is typically included in a multilevel cloud SLA?",o:["Corporate/provider-wide obligations","Individual developer employment contracts","Unrelated third-party agreements","Hardware vendor warranties"],a:0,e:"Multilevel SLA includes corporate-wide obligations, customer-specific, and service-specific metrics."},
+{w:3,q:"Three-tier SLA: corporate 95%, customer 98%, service 99.9% uptime. Provider is LEGALLY BOUND to honor:",o:["Corporate-level (broadest)","Customer-level (middle)","Service-level (most specific)","Provider chooses lowest"],a:2,e:"Service-level SLA is most granular and specific — legally binding."},
+{w:3,q:"Which metrics are most commonly in production cloud SLAs?",o:["Uptime % and MTTR","Developer salary and uptime %","IP range and timezone","Commit frequency and bug count"],a:0,e:"Uptime and response/recovery metrics measure SLA compliance."},
+{w:3,q:"10,000 requests/hour with 99.5% success. Acceptable failed requests per hour?",o:["5","10","50","500"],a:2,e:"0.5% × 10,000 = 50 failed requests/hour."},
+{w:3,q:"What distinguishes parallel analytic databases from single-node RDBMS?",o:["SQL query support","Multi-node parallel query execution with data partitioning","ACID support","Normalized schemas only"],a:1,e:"Parallel analytic DBs execute queries across multiple nodes with data partitioning."},
+{w:3,q:"Real-time IoT pipeline: 1M events/sec, sub-second latency. Which is LEAST suitable?",o:["Kafka + Flink","Google Cloud Dataflow","AWS S3 + batch Spark every 5 min","Azure Event Hubs + Structured Streaming"],a:2,e:"S3 batch processing introduces inherent latency — unsuitable for sub-second requirements."},
+{w:3,q:"Scalable pipeline for large video files in parallel — best storage?",o:["Managed relational DB","Object storage + Hadoop/Spark connector (S3/GCS)","Single-node block volume","In-memory cache only"],a:1,e:"Object storage with Hadoop/Spark connectors designed for large blobs and parallel processing."},
+{w:3,q:"MapReduce word-count: mapper output 1.5TB, reducer disk runs out during merge. Cause and solution?",o:["Mapper inefficient; rewrite","Combiner didn't run; configure combiner","Shuffle didn't deduplicate; increase reducers","Network saturated; add nodes"],a:1,e:"Combiner pre-aggregates intermediate data locally, significantly reducing data before shuffling."},
+{w:3,q:"OpenStack: 900 vCPUs, overcommit ratio 4.5:1. Total allocatable vCPUs?",o:["4100","4150","4050","4200"],a:2,e:"900 × 4.5 = 4050 vCPUs."},
+{w:4,q:"Azure SQL Database compute tiers — which is CORRECT?",o:["Business Critical uses remote premium storage","General Purpose replicates synchronously across regions","Hyperscale allows automatic storage scaling beyond 100TB","All the above"],a:2,e:"Business Critical uses LOCAL SSD. General Purpose uses async replication. Hyperscale auto-scales beyond 100TB."},
+{w:4,q:"What limits maximum attachable data disks to an Azure VM?",o:["Subscription type","Operating system","VM size and SKU","Region availability"],a:2,e:"Disk limits strictly enforced by VM size (SKU)."},
+{w:4,q:"Most SECURE passwordless authentication for Linux VM beyond SSH keys?",o:["SSH public key with permissions 600","Azure AD SSH via Azure Bastion/VM extension","Service Principal with client secret","Certificate-based SSH"],a:1,e:"Azure AD SSH eliminates key management. Bastion removes internet-facing SSH ports."},
+{w:4,q:"Premium App Service provides what additional capability beyond more slots?",o:["Faster swap operations","Traffic warm-up before swap","Slots no longer consume quota","Independent scaling per slot"],a:1,e:"Premium adds traffic warm-up — staging slot fully loaded before swap."},
+{w:4,q:"Azure App Service — securely access secrets without exposing credentials?",o:["App Settings","Service Principal","Managed Identity + Key Vault","Storage Access Keys"],a:2,e:"Managed Identity + Key Vault eliminates secret handling entirely."},
+{w:4,q:"Strong consistency + multi-row transactions + sub-second global latency. Which GCP database?",o:["Cloud Firestore","Cloud Spanner","Cloud Bigtable","BigQuery"],a:1,e:"Cloud Spanner = globally distributed, strongly consistent, ACID transactions."},
+{w:4,q:"OpenStack: which service decides VM placement on compute host?",o:["Neutron","Nova Scheduler","Nova Compute","Keystone"],a:1,e:"Nova Scheduler decides placement. Nova Compute runs the VM."},
+{w:4,q:"Event-driven container execution without cluster management — best GCP option?",o:["Compute Engine","GKE Autopilot","App Engine Standard","Cloud Run"],a:3,e:"Cloud Run is serverless, container-native, fully abstracts Kubernetes."},
+{w:4,q:"Petabytes of IoT time-series data, high write throughput, millisecond reads, no complex joins. Best storage?",o:["BigQuery","Cloud SQL","Bigtable","Firestore"],a:2,e:"Bigtable built for massive-scale, low-latency key-value/time-series workloads."},
+{w:4,q:"Instances communicate but can't get IP addresses automatically. Most likely cause?",o:["Neutron L3 agent failure","Neutron DHCP agent failure","Nova conductor failure","Glance metadata corruption"],a:1,e:"DHCP agent provides IP allocation. Without it → no auto IP."},
+{w:5,q:"99% availability SLA. App runs Y hours/day for 20 days. 4 hours downtime, SLA violated. Max Y?",o:["Y < 20","Y ≥ 20.2","Y = 24","Insufficient data"],a:0,e:"(1 − 4/20Y) < 0.99 → Y < 20."},
+{w:5,q:"Which is always true in a multi-core cloud server?",o:["Power decreases as cores increase","Power increases strictly linearly","Activating more cores increases instantaneous power draw","Energy per task always increases"],a:2,e:"More active cores = higher instant power. Linearity and per-task efficiency vary."},
+{w:5,q:"Enterprise moving to hybrid cloud — most significant economic change?",o:["OpEx increases relative to CapEx","TCO always decreases","Fixed costs don't decrease, variable costs increase","Revenue decreases"],a:0,e:"Hybrid cloud shifts CapEx (hardware) to OpEx (subscriptions)."},
+{w:5,q:"Which cloud characteristic most improves cost efficiency for unpredictable workloads?",o:["High availability","Elastic scalability","Geographic redundancy","Dedicated hardware"],a:1,e:"Elasticity scales resources with demand, preventing over-provisioning."},
+{w:5,q:"Which technology allows multiple OSs on same physical server?",o:["Containerization","Virtualization","Load balancing","RAID"],a:1,e:"Virtualization uses hypervisor to run multiple OS instances on shared hardware."},
+{w:5,q:"Which factor MOST improves MapReduce performance in cloud?",o:["Increasing reducer count","Increasing replication factor","Scheduling mappers on nodes storing the data","Using larger block size only"],a:2,e:"Data locality minimizes network transfer during map phase."},
+{w:5,q:"Increasing HDFS block size generally results in:",o:["More parallelism","Fewer mappers & reduced scheduling overhead","More shuffle traffic","Reduced fault tolerance"],a:1,e:"Larger blocks → fewer input splits → fewer map tasks → less scheduling overhead."},
+{w:5,q:"Containers vs VMs for high-density workload — best trade-off statement?",o:["Containers provide stronger isolation than VMs","VMs have lower overhead sharing host kernel","Containers achieve higher density but weaker isolation vs VMs","Both have identical overhead"],a:2,e:"Containers share host kernel — less overhead, higher density, weaker isolation than VMs."},
+{w:5,q:"8 servers, 32 VMs at 50% CPU → consolidated to 5 servers, 75% CPU. Most likely consequence?",o:["Power decreased; SLA violation risk increased","Power increased; SLA improved","Power decreased; SLA unaffected","Insufficient data"],a:0,e:"Fewer servers = less idle power. Higher utilization = less headroom for spikes."},
+{w:5,q:"Which technique helps avoid hotspots in a cloud cluster?",o:["Energy-aware scheduling","VM migration / load balancing","Increasing replication factor","Using larger HDFS blocks"],a:1,e:"VM migration/load balancing distributes workloads to prevent bottlenecks."},
+{w:6,q:"Attacker replays captured auth token. Primarily compromises which security property?",o:["Confidentiality","Integrity","Availability","Authenticity"],a:3,e:"Replay allows impersonation — undermines authenticity."},
+{w:6,q:"Phishing email gets user credentials. Affects which property?",o:["Confidentiality","Availability","Integrity","Authenticity"],a:0,e:"Credentials revealed to unauthorized party — confidentiality lost."},
+{w:6,q:"Which is a passive attack?",o:["Modifying packets in transit","Injecting forged packets","Traffic analysis to infer communication patterns","Launching DoS attack"],a:2,e:"Traffic analysis observes without modifying — passive attack."},
+{w:6,q:"Slow HTTP POST flood exhausting connection pool. Best classified as:",o:["Disruption","Disclosure","Usurpation","Deception"],a:0,e:"Degrades/interrupts normal service — disruption (DoS style)."},
+{w:6,q:"Which exploits vulnerabilities and demonstrates real-world impact (requires written authorization)?",o:["Reconnaissance","Vulnerability scanning","Penetration testing","Post-attack investigation"],a:2,e:"Pen testing actively exploits vulnerabilities. Requires explicit permission."},
+{w:6,q:"Which provides non-repudiation for online financial transaction?",o:["Strong password over HTTPS","Shared symmetric key encryption","Logging IP addresses","Digitally signing with sender's private key"],a:3,e:"Digital signatures with private key provide non-repudiation."},
+{w:6,q:"I: Authorization verifies identity. II: Non-repudiation ensures sender can't deny sending.",o:["I TRUE, II FALSE","I FALSE, II TRUE","Both TRUE","Both FALSE"],a:1,e:"Authentication (not authorization) verifies identity. Non-repudiation statement is true."},
+{w:6,q:"Startup uploads code, provider manages OS/middleware/runtime. Which model?",o:["SaaS","IaaS","PaaS","DaaS"],a:2,e:"PaaS provides managed runtime and middleware for app deployment."},
+{w:6,q:"Law requires citizen data stored/processed within country only. Which cloud security risk?",o:["Regulatory Compliance & Audit","Data Location","Disaster Recovery","Investigative Support"],a:1,e:"Requirement about where data physically resides — data location concern."},
+{w:6,q:"Vendor lock-in is most directly associated with:",o:["Difficulty migrating data to another provider","Unauthorized data disclosure","Increased regulatory audits","Privileged user misuse"],a:0,e:"Vendor lock-in makes migration hard due to proprietary formats/APIs."},
+{w:7,q:"Mobile cloud gaming: frame drops between Wi-Fi/cellular. Primary MCC challenge?",o:["Insufficient installed games","High dependency on wide-area network conditions","Overprovisioned CPU on device","Removal of device caches"],a:1,e:"MCC relies on remote servers. Network variations cause performance degradation."},
+{w:7,q:"Primary reason for deploying cloudlet in campus/stadium?",o:["Eliminate encryption needs","Low-latency compute for AR/VR and real-time apps","Guarantee global data sovereignty compliance","Permanently replace centralized cloud"],a:1,e:"Cloudlets bring computation closer for low-latency real-time applications."},
+{w:7,q:"Dynamic offloading: which parameter is LEAST useful for energy-delay decision?",o:["Current bandwidth and RTT","Battery remaining %","Number of apps installed","Estimated local CPU time"],a:2,e:"Installed app count irrelevant to specific task's energy/delay trade-off."},
+{w:7,q:"University server cluster in cafeteria for AR menu visualization on phones. Best described as:",o:["Global hyperscale cloud DC","Cloudlet close to end users","Personal hotspot","Satellite relay node"],a:1,e:"Cloudlet = small-scale data center near mobile users for low-latency offloading."},
+{w:7,q:"Mobile banking via MCC. Most critical security concern?",o:["Screen size","App icon resolution","Smartphone color variety","Confidentiality of data during transmission/processing"],a:3,e:"Financial data transmitted to cloud — primary concern is data confidentiality."},
+{w:7,q:"Key advantage of Fog Computing over Cloud Computing?",o:["Better real-time app support (healthcare, autonomous vehicles)","Higher centralization","Infinite storage","No network infrastructure needed"],a:0,e:"Fog supports real-time apps by reducing delays through local processing."},
+{w:7,q:"Why 5G + Edge/Fog for real-time healthcare monitoring?",o:["5G guarantees zero packet loss","5G replaces local processing hardware","Edge reduces decision latency + 5G offers low transport latency","Edge makes patient data public"],a:2,e:"Edge processing + 5G low-latency transport = reduced end-to-end latency."},
+{w:7,q:"Geospatial cloud: which optimization most improves parallel processing of satellite tiles?",o:["Increasing screen resolution","Single-threaded pipeline","Shorter filenames","Partitioning tiles into spatially-indexed blocks processed in parallel"],a:3,e:"Partitioning enables parallel/distributed processing with Spark/Hadoop."},
+{w:7,q:"Satellite imagery + LiDAR migration to geospatial cloud — most fundamental challenge?",o:["Extremely high computation and storage demands","Lack of public interest","Can't run GIS on cloud","Must remove open geospatial standards"],a:0,e:"Massive datasets require high-performance computing and large storage."},
+{w:7,q:"ECG alerts within hundreds of ms. Most appropriate combination?",o:["Batch analytics + manual downloads","Pure cloud over satellite link","Fog/Edge + low-latency wireless (5G)","Store offline, upload daily"],a:2,e:"Real-time health monitoring needs edge/fog + low-latency communication."},
+{w:8,q:"Docker command to show all containers (running + stopped)?",o:["docker ps","docker ps -a","docker container run","docker images"],a:1,e:"docker ps = running only. docker ps -a = all. docker images = images."},
+{w:8,q:"Which Docker volumes statement is TRUE?",o:["Stored inside container's writable layer","Auto-deleted when container stops","Persist independently of container lifecycle","Only attach to one container"],a:2,e:"Volumes exist outside container's writable layer and persist even after removal."},
+{w:8,q:"Containers and VMs relationship?",o:["Container includes its own kernel","Multiple containers share OS kernel while on a VM","Containers must run on bare-metal only","VMs must run inside containers"],a:1,e:"Containers share host kernel (which may be in a VM). One VM can host multiple containers."},
+{w:8,q:"Which is NOT a Kubernetes responsibility?",o:["Auto-restart failed containers","Schedule containers across cluster","Provide hardware virtualization via hypervisor","Load balance traffic across replicas"],a:2,e:"Kubernetes = container orchestration. Hardware virtualization = hypervisors."},
+{w:8,q:"Green Cloud: which strategy most reduces energy while maintaining SLA?",o:["Keep all servers on but underutilized","Random VM assignment","Consolidate VMs + power down idle machines","Run on oldest hardware first"],a:2,e:"VM consolidation packs workloads, allowing unused servers to power down."},
+{w:8,q:"Biggest challenge integrating WSNs into Sensor-Cloud?",o:["Sensors can't support virtualization (limited compute/memory)","Sensors have plentiful power","Sensor data is low-volume","Sensors run Kubernetes natively"],a:0,e:"Sensors are resource-constrained — can't support virtualization directly."},
+{w:8,q:"Ultra-low-latency IoT apps — best architecture?",o:["Centralized cloud only","Edge/fog computing near devices","Buffer at cloud, batch respond","No local processing, raw data to cloud"],a:1,e:"Edge/fog reduces latency by processing closer to data source."},
+{w:8,q:"Why preprocess sensor data before long-term storage?",o:["Reduce rapidly growing storage/processing costs","Data already compressed","Eliminate cloud infrastructure need","Make sensors use more battery"],a:0,e:"Raw IoT data in large volumes makes storing everything expensive and inefficient."},
+{w:8,q:"S1: Virtual sensors aggregate data from multiple physical sensors. S2: Sensor Cloud virtualization enables app sharing of infrastructure.",o:["S1 True, S2 False","S1 False, S2 True","Both True","Both False"],a:2,e:"Virtual sensors fuse data. Virtualization enables resource sharing across apps. Both true."},
+{w:8,q:"Why can't latency-critical IoT (autonomous vehicles) rely solely on centralized cloud?",o:["Cloud too expensive","Physical network distance = unacceptable latency","Cloud doesn't support real-time","IoT can't connect continuously"],a:1,e:"Distant data centers add propagation and network delay."},
+{w:9,q:"Best description of cloud vs fog computing?",o:["Cloud processes near devices; fog in centralized centers","Cloud distributed; fog only in cloud core","Cloud centralized; fog distributes processing closer to devices","Cloud for storage only; fog for analytics only"],a:2,e:"Cloud = centralized. Fog extends processing closer to end devices through intermediate nodes."},
+{w:9,q:"Autonomous vehicle for obstacle detection/braking should rely on:",o:["Cloud computing","Fog computing","Edge computing","Centralized data warehouse"],a:2,e:"Ultra-low latency required. Processing on vehicle's onboard edge system."},
+{w:9,q:"Physical proximity to end devices (closest→farthest)?",o:["Cloud→Fog→Edge","Edge→Fog→Cloud","Fog→Edge→Cloud","Edge→Cloud→Fog"],a:1,e:"Edge (at device) → Fog (intermediate) → Cloud (distant)."},
+{w:9,q:"Prevent overload when many edge devices send to fog nodes?",o:["Increase storage at single node","Static task allocation","Load balancing across fog nodes","Send all to cloud"],a:2,e:"Load balancing distributes tasks across fog nodes, avoiding congestion."},
+{w:9,q:"Task offloading in fog-edge-cloud architecture?",o:["All tasks process in cloud first","Edge always offloads to cloud","Time-critical at edge/fog; heavy delay-tolerant to cloud","Fog only stores data"],a:2,e:"Time-critical → edge/fog. Compute-intensive delay-tolerant → cloud."},
+{w:9,q:"Strongest factor for edge vs cloud task execution?",o:["Data archival needs","Latency sensitivity","Cloud storage capacity","Historical dataset size"],a:1,e:"Edge chosen primarily for delay-sensitive applications."},
+{w:9,q:"Moving computation from cloud to fog most optimizes:",o:["Disk storage","Network latency","Encryption level","DB consistency"],a:1,e:"Fog nodes closer geographically → reduces communication delay."},
+{w:9,q:"Most critical for trust in cloud federation?",o:["Uniform hardware","Standardized pricing only","Federated identity management + secure SLA enforcement","Centralized ownership"],a:2,e:"Trust requires strong identity federation, authentication, and SLA enforcement."},
+{w:9,q:"What enables interoperability in cloud federation?",o:["Proprietary APIs","Closed resource policies","Standardized interfaces and open protocols (REST, OCCI, CIMI)","Centralized control by one CSP"],a:2,e:"Interoperability needs standardized APIs and open protocols."},
+{w:9,q:"Workload migration in hybrid cloud federation justified when:",o:["All workloads have identical requirements","Private underutilized, public idle","Sensitive stays private, burst needs public capacity","Interoperability restricted"],a:2,e:"Sensitive private + burst public = hybrid cloud federation purpose."},
+{w:10,q:"Most critical issue for live VM migration across geo-distributed DCs?",o:["Uniform CPU clock speed","High network latency and bandwidth variability","Local storage availability","Number of VM snapshots"],a:1,e:"High latency and fluctuating bandwidth dominate WAN migration challenges."},
+{w:10,q:"Which migration technique consumes highest network bandwidth?",o:["Cold migration","Pre-copy migration","Post-copy migration","Offline image transfer"],a:1,e:"Pre-copy retransmits dirty pages multiple times — most bandwidth-intensive."},
+{w:10,q:"What most increases energy during live migration in fog?",o:["Small VM memory","Short network distance","Frequent dirty page retransmission","Low CPU on source"],a:2,e:"Repeated retransmission increases network, CPU, and migration duration."},
+{w:10,q:"Primary role of Kubernetes in container environments?",o:["Build container images","Provide container runtime","Orchestrate, schedule, scale, manage containers across clusters","Replace VMs entirely"],a:2,e:"Kubernetes manages deployment, scheduling, auto-scaling, self-healing, load balancing."},
+{w:10,q:"Which Docker component handles Dockerfile build instructions?",o:["Docker Hub","Docker CLI","Docker Daemon","Docker Registry"],a:2,e:"Docker Daemon processes Dockerfile instructions and builds the image."},
+{w:10,q:"Which Docker feature ensures container isolation from host?",o:["Hypervisor","Linux namespaces and cgroups","VM snapshots","Docker Swarm"],a:1,e:"Namespaces for process isolation. Cgroups for resource limits (CPU, memory)."},
+{w:10,q:"S1: Volumes persist after container deletion. S2: Container writable layer data survives removal.",o:["Only S1 true","Only S2 true","Both true","Both false"],a:0,e:"Volumes persist independently. Writable layer deleted with container."},
+{w:10,q:"In Docker, _____ creates and manages containers on host.",o:["Docker Hub","Docker Engine","Kubernetes","Dockerfile"],a:1,e:"Docker Engine is the core runtime for building, running, managing containers."},
+{w:10,q:"64 GB VM memory, 8 MB/sec channel. Non-live migration time and downtime?",o:["1 hour, 1 hour","2 hours, 2 hours","2.5 hours, 2.5 hours","3 hours, 3 hours"],a:1,e:"(64×1024)/8 = 8192 sec ≈ 2.27 hrs ≈ 2 hours. Non-live: downtime = migration time."},
+{w:10,q:"Containers require a full guest operating system to run.",o:["True","False"],a:1,e:"Containers share host OS kernel — no full guest OS needed."},
+{w:11,q:"What most distinguishes Dew computing from Edge computing?",o:["Both need continuous internet","Dew nodes operate fully offline, sync later with cloud","Edge only stores; dew computes","Dew replaces cloud entirely"],a:1,e:"Dew computing emphasizes autonomous offline operation with later synchronization."},
+{w:11,q:"Best application scenario for Dew computing?",o:["Real-time stock trading","Remote rural education with unstable internet","HPC weather modeling","Centralized banking"],a:1,e:"Dew suits intermittent connectivity — devices work locally, sync when online."},
+{w:11,q:"Which Dew layer handles conflict resolution after offline operation?",o:["Physical sensor layer","Dew layer device","Cloud layer synchronization service","Network routing layer"],a:2,e:"Conflict resolution handled during cloud synchronization for global consistency."},
+{w:11,q:"Main trade-off of Dew computing?",o:["Reduced latency vs hardware virtualization","Local autonomy vs data consistency complexity","High scalability vs low storage","Better security vs no offline capability"],a:1,e:"Independence increases autonomy but introduces data consistency challenges."},
+{w:11,q:"Which issue affects serverless performance?",o:["VM hypervisor overhead","Cold start latency","Disk fragmentation","Hardware driver conflicts"],a:1,e:"Cold start = delay when initializing new runtime container after idle period."},
+{w:11,q:"Why are serverless functions designed stateless?",o:["Reduce electricity","Unlimited local storage","Allow automatic scaling and parallel execution","Avoid APIs"],a:2,e:"Statelessness enables horizontal scaling and parallel execution without conflicts."},
+{w:11,q:"What limits FaaS for long-running scientific simulations?",o:["No GPU support","Execution time limits by providers","No internet access","Can't process streams"],a:1,e:"FaaS platforms enforce maximum execution time limits."},
+{w:11,q:"Why is direct file system storage unreliable in FaaS?",o:["File systems encrypted","Functions on different hosts, storage ephemeral","Storage too slow","Disk access disabled"],a:1,e:"FaaS instances are ephemeral, may run on different machines each time."},
+{w:11,q:"AWS Lambda hard execution limit?",o:["Run indefinitely","Maximum 15 minutes","Up to 1 hour","No upper bound"],a:1,e:"AWS Lambda max timeout = 900 seconds (15 minutes)."},
+{w:11,q:"Amazon Redshift is provided by:",o:["Google","Microsoft","Amazon Web Services","Oracle"],a:2,e:"Redshift is AWS's managed data warehousing service."},
+{w:12,q:"MCC helps mobile devices by: (1)Extending storage (2)Heavy analytics (3)Removing wireless delays completely (4)Scalable resources",o:["1,2,4 only","1,3 only","2,3 only","All"],a:0,e:"MCC extends storage, supports computation, provides scalability. Does NOT completely remove delays."},
+{w:12,q:"Spatial Cloud Computing primarily handles which data?",o:["Text logs","Financial transactions","Geospatial data (coordinates, maps, satellite imagery)","Emails"],a:2,e:"Spatial cloud focuses on GIS layers, GPS coordinates, remote sensing imagery."},
+{w:12,q:"Which domain benefits most from Spatial Cloud Computing?",o:["Gaming leaderboards","Weather forecasting and disaster management","Social messaging","Document editing"],a:1,e:"Spatial cloud supports geospatial analytics for weather, disasters, smart cities."},
+{w:12,q:"In CPS, real-time sensor-actuator feedback is essential for:",o:["Data archiving","Closed-loop control","Static analysis","Batch processing"],a:1,e:"CPS integrates sensing, computation, actuation — closed-loop control."},
+{w:12,q:"A _____ is a trace by a moving object in geographic space, represented by chronologically ordered points.",o:["Time series","Road map","Spatial trajectory","Spatial crowdsourcing"],a:2,e:"Spatial trajectory = path of moving object as time-ordered coordinates."},
+{w:12,q:"Wearables collect data → gateways preprocess → cloud does long-term analytics. Which paradigm?",o:["Edge only","IoT without cloud","Cloud-Fog-Edge integrated IoHT","Centralized cloud only"],a:2,e:"Distributed across edge, fog, cloud = multi-layer IoHT architecture."},
+{w:12,q:"V2V communication primary objective?",o:["Internet access for vehicles","Exchanging safety info (speed, position, braking)","Infotainment support","Upload data to cloud"],a:1,e:"V2V = direct vehicle-to-vehicle safety messaging to prevent collisions."},
+{w:12,q:"Technology most associated with low-latency V2X safety messaging?",o:["Bluetooth","Wi-Fi 802.11n","DSRC / IEEE 802.11p","NFC"],a:2,e:"DSRC (802.11p) designed for vehicular low-latency, high-mobility communication."},
+{w:12,q:"Major benefit of real-time mobility analytics in urban transport?",o:["Eliminate traffic laws","Dynamic traffic signal optimization based on live density","Reduce manufacturing costs","Prevent all accidents"],a:1,e:"Real-time analytics adapts traffic signals dynamically, reducing congestion."},
+{w:12,q:"Key advantage of 5G eMBB over 4G LTE?",o:["Lower latency for critical control","Extremely high data rates and improved bandwidth efficiency","Infinite coverage","No base stations needed"],a:1,e:"eMBB provides higher throughput, better bandwidth, more uniform data rates."}
+];
+
+let currentQuiz=[],currentIndex=0,score=0,wrongAnswers=[],lastMode='all',lastWeek=0;
+let stats=JSON.parse(localStorage.getItem('ccStats')||'{"attempted":0,"correct":0,"wrongIds":[]}');
+
+function updateHomeStats(){
+document.getElementById('statAttempted').textContent=stats.attempted;
+document.getElementById('statAccuracy').textContent=stats.attempted>0?Math.round(stats.correct/stats.attempted*100)+'%':'—';
+}
+function buildWeekGrid(){
+const g=document.getElementById('weekGrid');g.innerHTML='';
+for(let i=1;i<=12;i++){const b=document.createElement('button');b.className='week-btn';b.textContent='W'+i;b.onclick=()=>startQuiz('week',i);g.appendChild(b)}
+}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
+
+function startQuiz(mode,wn){
+lastMode=mode;lastWeek=wn||0;currentIndex=0;score=0;wrongAnswers=[];
+if(mode==='all')currentQuiz=shuffle(Q);
+else if(mode==='random20')currentQuiz=shuffle(Q).slice(0,20);
+else if(mode==='random10')currentQuiz=shuffle(Q).slice(0,10);
+else if(mode==='weak'){const w=Q.filter((_,i)=>stats.wrongIds.includes(i));if(!w.length){alert('No wrong answers yet! Try other modes first.');return}currentQuiz=shuffle(w).slice(0,Math.min(20,w.length))}
+else if(mode==='week')currentQuiz=shuffle(Q.filter(q=>q.w===wn));
+document.getElementById('homeScreen').classList.add('hidden');
+document.getElementById('quizScreen').classList.add('active');
+document.getElementById('resultsScreen').classList.remove('active');
+renderQuestion();
+}
+
+function renderQuestion(){
+const q=currentQuiz[currentIndex],t=currentQuiz.length,p=((currentIndex)/t*100).toFixed(0);
+document.getElementById('progressFill').style.width=p+'%';
+document.getElementById('progressText').textContent=(currentIndex+1)+'/'+t;
+document.getElementById('scoreText').textContent='Score: '+score;
+document.getElementById('btnNext').classList.remove('visible');
+const L=['A','B','C','D'];
+let oh=q.o.map((opt,i)=>`<button class="option-btn" onclick="sel(this,${i},${q.a})"><span class="opt-letter">${L[i]}</span><span>${opt}</span></button>`).join('');
+document.getElementById('questionArea').innerHTML=`<div class="question-card"><span class="q-week-tag">Week ${q.w}</span><div class="q-text">${q.q}</div><div class="options-list">${oh}</div><div id="expArea"></div></div>`;
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function sel(btn,s,c){
+const opts=document.querySelectorAll('.option-btn');
+opts.forEach(o=>{o.classList.add('disabled');o.onclick=null});
+const q=currentQuiz[currentIndex],qi=Q.indexOf(q);
+if(s===c){btn.classList.add('correct');score++;stats.correct++;stats.wrongIds=stats.wrongIds.filter(id=>id!==qi)}
+else{btn.classList.add('wrong');opts[c].classList.add('correct');wrongAnswers.push({q:q.q,your:q.o[s],correct:q.o[c],e:q.e});if(!stats.wrongIds.includes(qi))stats.wrongIds.push(qi)}
+stats.attempted++;localStorage.setItem('ccStats',JSON.stringify(stats));
+document.getElementById('expArea').innerHTML=`<div class="explanation"><strong>Explanation:</strong> ${q.e}</div>`;
+document.getElementById('btnNext').classList.add('visible');
+}
+
+function nextQuestion(){currentIndex++;if(currentIndex>=currentQuiz.length)showResults();else renderQuestion()}
+
+function showResults(){
+document.getElementById('quizScreen').classList.remove('active');
+document.getElementById('resultsScreen').classList.add('active');
+const p=Math.round(score/currentQuiz.length*100),c=document.getElementById('scoreCircle');
+c.className='score-circle '+(p>=80?'good':p>=50?'avg':'bad');
+document.getElementById('finalScore').textContent=p+'%';
+const t=p>=90?['🔥 Outstanding!','Exam ready!']:p>=70?['👍 Good Job!','A bit more practice!']:p>=50?['📖 Keep Going!','Review weak areas below.']:['💪 Don\'t Give Up!','Focus on explanations and retry.'];
+document.getElementById('resultsTitle').textContent=t[0];
+document.getElementById('resultsMsg').textContent=score+'/'+currentQuiz.length+' correct. '+t[1];
+let rh='';
+if(wrongAnswers.length){rh=`<h3>❌ Review Wrong Answers (${wrongAnswers.length})</h3>`;wrongAnswers.forEach(w=>{rh+=`<div class="review-item"><div class="ri-q">${w.q}</div><div class="ri-your">Your answer: ${w.your}</div><div class="ri-ans">✓ Correct: ${w.correct}</div></div>`})}
+document.getElementById('reviewSection').innerHTML=rh;
+updateHomeStats();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function retryQuiz(){lastMode==='week'?startQuiz('week',lastWeek):startQuiz(lastMode)}
+function goHome(){document.getElementById('resultsScreen').classList.remove('active');document.getElementById('quizScreen').classList.remove('active');document.getElementById('homeScreen').classList.remove('hidden');updateHomeStats()}
+function confirmExit(){if(confirm('Exit quiz? Progress will be lost.'))goHome()}
+
+buildWeekGrid();updateHomeStats();
+</script>
+</body>
+</html>
